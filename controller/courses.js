@@ -4,7 +4,7 @@ const courseModel = require('../models/courses')
 const addCourse = async (req,res)=>{
    try {
     const {courseName, courseDesc, coursePrice} = req.body;
-    const imageUrl = req.file ? `http://localhost:3000/uploads/${req.file.filename}` : "";
+    const imageUrl = req.file ? `https://courses-frontend-three.vercel.app/uploads/${req.file.filename}` : "";
 
     const course = courseModel({
         courseName,

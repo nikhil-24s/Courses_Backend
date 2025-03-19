@@ -4,28 +4,28 @@ const jwt = require('jsonwebtoken')
 
 const Admin = async () => {
 
-    const isAdminExist = await userModel.findOne({ email : 'admin@admin.com' });
+    const isAdminExist = await userModel.findOne({ email: 'admin@admin.com' });
 
     if (isAdminExist) {
         console.log('Admin Already Exist');
-    }else{
+    } else {
         const hashPassword = await bcrypt.hash("Admin", 10);
-    
+
         const user = userModel({
             username: 'Admin',
             email: 'admin@admin.com',
             password: hashPassword,
             role: 'Admin'
         });
-    
+
         await user.save()
-    
+
         console.log('Admin Created Successfully');
     }
 
 }
 
-  
+
 const register = async (req, res) => {
     const { username, email, password } = req.body
 
@@ -67,7 +67,7 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Set secure flag in production
         sameSite: 'None',
-      });
+    });
 
     res.status(200).json({ status: true, message: 'Login Successfully' })
 }
@@ -76,7 +76,8 @@ const logout = (req, res) => {
     try {
         res.clearCookie('token', {
             httpOnly: true,
-            sameSite: 'strict'
+            secure: process.env.NODE_ENV === 'production', // Set secure flag in production
+            sameSite: 'None',
         })
         res.json({ status: true, message: 'Logout Successfully' })
     } catch (error) {
@@ -86,12 +87,12 @@ const logout = (req, res) => {
 
 const authUser = (req, res) => {
     const token = req.cookies.token;
-    if(!token){
-        return res.json({status: false, message: 'You are not authorized'})
+    if (!token) {
+        return res.json({ status: false, message: 'You are not authorized' })
     }
 
     const user = jwt.verify(token, process.env.JWT_SECRET)
-    res.json({ status : true, user })
+    res.json({ status: true, user })
 }
 
 module.exports = {
