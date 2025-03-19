@@ -23,7 +23,16 @@ const storage = multer.diskStorage({
   const upload = multer({ storage, fileFilter });
 
 
-router.post('/add-course',upload.single("image"),addCourse)
+// router.post('/add-course',upload.single("image"),addCourse)
+router.post('/add-course', (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ status: false, message: err.message });
+    }
+    next();
+  });
+}, addCourse);
+
 router.get('/all-course',allCourses)
 router.post('/get-course',getCourse)
 router.post('/update-course',updateCourse)
