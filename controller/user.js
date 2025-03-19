@@ -24,6 +24,8 @@ const Admin = async () => {
     }
 
 }
+
+  
 const register = async (req, res) => {
     const { username, email, password } = req.body
 
@@ -63,8 +65,9 @@ const login = async (req, res) => {
     const token = jwt.sign({ userId: isUserExist._id, username: isUserExist.username, role: isUserExist.role }, process.env.JWT_SECRET, { expiresIn: '1d' })
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: 'strict',
-    });
+        secure: process.env.NODE_ENV === 'production', // Set secure flag in production
+        sameSite: 'None',
+      });
 
     res.status(200).json({ status: true, message: 'Login Successfully' })
 }

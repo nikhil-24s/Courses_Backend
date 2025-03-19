@@ -16,6 +16,9 @@ connectToDB()
 // Admin created 
 Admin()
 
+app.set('trust proxy', 1);
+
+
 // Middleware 
 app.use(cors({
     origin: ['https://courses-frontend-three.vercel.app'],
