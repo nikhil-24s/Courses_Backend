@@ -17,10 +17,19 @@ const addCourse = async (req, res) => {
             return res.status(400).json({ status: false, message: "Image is required." });
         }
 
-        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-        const result = await cloudinary.uploader.upload(base64Image, { folder: "courses" });
+        // Upload Image to Cloudinary using upload_stream
+        const uploadResult = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { folder: "courses" },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            );
+            uploadStream.end(req.file.buffer);
+        });
 
-        const imageUrl = result.secure_url;
+        const imageUrl = uploadResult.secure_url;
 
         const course = courseModel({
             courseName,
