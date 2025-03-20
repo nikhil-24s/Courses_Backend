@@ -1,11 +1,25 @@
 const courseModel = require('../models/courses')
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 const addCourse = async (req,res)=>{
    try {
     const {courseName, courseDesc, coursePrice} = req.body;
-    const imageUrl = req.file ? `https://courses-frontend-three.vercel.app/uploads/${req.file.filename}` : "";
+    // const imageUrl = req.file ? `https://courses-frontend-three.vercel.app/uploads/${req.file.filename}` : "";
 
+    if (!req.file) {
+        return res.status(400).json({ status: false, message: "Image is required." });
+      }
+  
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const imageUrl = result.secure_url;
+  
     const course = courseModel({
         courseName,
         courseDesc,
