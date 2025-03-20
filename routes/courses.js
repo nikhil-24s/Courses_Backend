@@ -4,23 +4,26 @@ const router = express.Router()
 const multer = require("multer");
 const path = require("path");
 
-const storage = multer.diskStorage({
-    destination: "./uploads/", // Ensure this folder exists
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-    }
-  });
+// const storage = multer.diskStorage({
+//     destination: "./uploads/", // Ensure this folder exists
+//     filename: (req, file, cb) => {
+//       cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+//     }
+//   });
   
-  // File filter
-  const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Invalid file type"), false);
-    }
-  };
+//   // File filter
+//   const fileFilter = (req, file, cb) => {
+//     if (file.mimetype.startsWith("image/")) {
+//       cb(null, true);
+//     } else {
+//       cb(new Error("Invalid file type"), false);
+//     }
+// };
   
-  const upload = multer({ storage, fileFilter });
+// const upload = multer({ storage, fileFilter });
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
 router.post('/add-course', upload.single('image'),addCourse)

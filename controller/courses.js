@@ -17,8 +17,9 @@ const addCourse = async (req,res)=>{
         return res.status(400).json({ status: false, message: "Image is required." });
       }
   
-    const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "courses", // Optional folder in Cloudinary
+      const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+      const result = await cloudinary.uploader.upload(base64Image, {
+        folder: "courses",
       });
     const imageUrl = result.secure_url;
   
